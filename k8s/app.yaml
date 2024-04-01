@@ -1,0 +1,392 @@
+---
+# user-service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: ds
+  labels:
+    app: user-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: user-service
+        version: v1
+    spec:
+      containers:
+        - name: user-service
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_user_service:1.2
+          env:
+            - name: NACOS_HOST  # dubbo服务注册中心nacos的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: NACOS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_HOST  # Mysql 地址
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_HOST
+                  name: ds-env
+                  optional: false
+            - name: REDIS_HOST  # Redis的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ACCOUNT
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DBNAME
+                  name: ds-keys
+                  optional: false
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASSWORD
+                  name: ds-keys
+                  optional: false
+          ports:
+            - containerPort: 20880 # dubbo 端口号
+              protocol: TCP
+
+---
+# 部署 store-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-service
+  namespace: ds
+  labels:
+    app: store-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: store-service
+        version: v1
+    spec:
+      containers:
+        - name: store-service
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_store_service:1.0
+          env: # pod 环境变量
+            - name: NACOS_HOST  # dubbo服务注册中心nacos的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: NACOS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_HOST  # Mysql的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_HOST
+                  name: ds-env
+                  optional: false
+            - name: REDIS_HOST  # Redis的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ACCOUNT
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DBNAME
+                  name: ds-keys
+                  optional: false
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASSWORD
+                  name: ds-keys
+                  optional: false
+          ports:
+            - containerPort: 20880
+              protocol: TCP
+
+---
+# 部署 favorites-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: favorites-service
+  namespace: ds
+  labels:
+    app: favorites-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: favorites-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: favorites-service
+        version: v1
+    spec:
+      containers:
+        - name: favorites-service
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_favorites_service:1.0
+          env: # pod 环境变量
+            - name: NACOS_HOST  # dubbo服务注册中心nacos的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: NACOS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_HOST  # Mysql的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_HOST
+                  name: ds-env
+                  optional: false
+            - name: REDIS_HOST  # Redis的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ACCOUNT
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DBNAME
+                  name: ds-keys
+                  optional: false
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASSWORD
+                  name: ds-keys
+                  optional: false
+          ports:
+            - containerPort: 20880
+              protocol: TCP
+---
+# 部署 order-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: ds
+  labels:
+    app: order-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: order-service
+        version: v1
+    spec:
+      containers:
+        - name: order-service
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_order_service:1.0
+          env: # pod 环境变量
+            - name: NACOS_HOST  # dubbo服务注册中心nacos的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: NACOS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_HOST  # Mysql的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_HOST
+                  name: ds-env
+                  optional: false
+            - name: REDIS_HOST  # Redis的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: ds-env
+                  optional: false
+            - name: MYSQL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ACCOUNT
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: ds-keys
+                  optional: false
+            - name: MYSQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DBNAME
+                  name: ds-keys
+                  optional: false
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASSWORD
+                  name: ds-keys
+                  optional: false
+          ports:
+            - containerPort: 20880
+              protocol: TCP
+
+---
+# 部署 ds-gateway
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ds-gateway
+  namespace: ds
+  labels:
+    app: ds-gateway
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ds-gateway
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ds-gateway
+        version: v1
+    spec:
+      containers:
+        - name: ds-gateway
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_gateway:1.0
+          env: # pod 环境变量
+            - name: NACOS_HOST  # dubbo服务注册中心nacos的IP地址
+              valueFrom:
+                configMapKeyRef:
+                  key: NACOS_HOST
+                  name: ds-env
+                  optional: false
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+---
+# api-gateway Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+  namespace: ds
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:  # 将后端服务 ds-gateway 和该 Service 进行映射
+    app: ds-gateway
+    version: v1
+  type: LoadBalancer
+
+---
+# 部署 ds-front deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ds-front
+  namespace: ds
+  labels:
+    app: ds-front
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ds-front
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ds-front
+        version: v1
+    spec:
+      containers:
+        - name: ds-front
+          image: registry.cn-shenzhen.aliyuncs.com/lr_715377484/book_front:1.0
+          ports:
+            - containerPort: 80
+              protocol: TCP
+---
+# 部署 ds-front service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ds-front
+  namespace: ds
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 30080
+  selector: # 将后端服务 ds-gateway 和该 Service 进行映射
+    app: ds-front
+    version: v1
+  type: LoadBalancer
+

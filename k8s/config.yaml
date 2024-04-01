@@ -1,0 +1,42 @@
+---
+# 创建命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ds
+spec:
+  finalizers:
+    - kubernetes
+
+---
+# 创建 ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ds-env
+  namespace: ds
+data:
+  NACOS_HOST: nacos-cs.default
+  MYSQL_HOST: mysql.default
+  REDIS_HOST: redis-single-node-cs.default
+  # 纯数字需要加双引号
+  NACOS_PORT: "8848"
+  MYSQL_PORT: "3306"
+  REDIS_PORT: "6379"
+
+---
+# 创建 Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ds-keys
+  namespace: ds
+  labels:
+    qcloud-app: ds-keys
+data:
+  # echo -n xxx | base64 , 加 -n 去掉 echo 默认加的换行
+  MYSQL_ACCOUNT: cm9vdA==
+  MYSQL_PASSWORD: RGF0YWtpdEAyMDIz
+  REDIS_PASSWORD: RGF0YWtpdEAyMDIz
+  MYSQL_DBNAME: ds
+type: Opaque

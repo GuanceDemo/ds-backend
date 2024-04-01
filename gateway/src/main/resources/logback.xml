@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <property name="LOG_PATH" value="../logs" />
+
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+<!--            <pattern>${CONSOLE_LOG_PATTERN}</pattern>-->
+<!--            <pattern>[%d{yyyy-MM-dd HH:mm:ss}] &#45;&#45; [%-5p]: [%c] &#45;&#45; %m%n</pattern>-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} qcbm-gateway [%tid] [%c]-[%t]-[%M]-[%L]-[%p] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/qcbm-gateway.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/qcbm-gateway-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <MaxHistory>5</MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>500MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+<!--                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %tid %t %logger{36}: %msg%n</pattern>-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} qcbm-gateway [%tid] [%c]-[%t]-[%M]-[%L]-[%p] %m%n</pattern>
+            </layout>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="springfox.documentation" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="fileAppender" />
+    </logger>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="fileAppender" />
+    </logger>
+
+    <logger name="org.apache.tomcat.util" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="fileAppender"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="fileAppender"/>
+    </root>
+</configuration>

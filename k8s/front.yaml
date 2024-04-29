@@ -1,0 +1,48 @@
+---
+# 部署 ds-front deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ds-front
+  namespace: ds
+  labels:
+    app: ds-front
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ds-front
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ds-front
+        version: v1
+    spec:
+      containers:
+        - name: ds-front
+          image: pubrepo.jiagouyun.com/ds-demo/book_front:1.2
+          ports:
+            - containerPort: 80
+              protocol: TCP
+---
+# 部署 ds-front service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ds-front
+  namespace: ds
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 30080
+  selector: # 将后端服务 ds-gateway 和该 Service 进行映射
+    app: ds-front
+    version: v1
+  type: LoadBalancer
+

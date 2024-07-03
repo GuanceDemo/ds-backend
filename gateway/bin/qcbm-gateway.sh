@@ -5,7 +5,7 @@
 # author: guance
 # date: 2021-03-16
 #======================================================================
-APP_NAME=qcbm-gateway
+APP_NAME=gateway
 
 APP_JAR="${APP_NAME}.jar"
 

@@ -21,6 +21,15 @@ spec:
         version: v1
       annotations:
         admission.datakit/java-lib.version: ""
+        datakit/logs: |
+          [
+            {
+              "disable": false,
+              "type": "file",
+              "path":"/data/logs/user-service.log",
+              "source":  "user-service"
+            }
+          ]
     spec:
       containers:
         - name: user-service
@@ -71,7 +80,12 @@ spec:
           ports:
             - containerPort: 20880 # dubbo 端口号
               protocol: TCP
-
+          volumeMounts:
+            - mountPath: /data/logs
+              name: datakit-vol-opt
+      volumes:
+        - name: datakit-vol-opt
+          emptyDir: {}
 ---
 # 部署 store-service
 apiVersion: apps/v1
@@ -95,6 +109,15 @@ spec:
         version: v1
       annotations:
         admission.datakit/java-lib.version: ""
+        datakit/logs: |
+          [
+            {
+              "disable": false,
+              "type": "file",
+              "path":"/data/logs/store-service.log",
+              "source":  "store-service"
+            }
+          ]
     spec:
       containers:
         - name: store-service
@@ -145,7 +168,12 @@ spec:
           ports:
             - containerPort: 20880
               protocol: TCP
-
+          volumeMounts:
+            - mountPath: /data/logs
+              name: datakit-vol-opt
+      volumes:
+        - name: datakit-vol-opt
+          emptyDir: {}
 ---
 # 部署 favorites-service
 apiVersion: apps/v1
@@ -169,6 +197,15 @@ spec:
         version: v1
       annotations:
         admission.datakit/java-lib.version: ""
+        datakit/logs: |
+          [
+            {
+              "disable": false,
+              "type": "file",
+              "path":"/data/logs/favorites-service.log",
+              "source":  "favorites-service"
+            }
+          ]
     spec:
       containers:
         - name: favorites-service
@@ -219,6 +256,12 @@ spec:
           ports:
             - containerPort: 20880
               protocol: TCP
+          volumeMounts:
+            - mountPath: /data/logs
+              name: datakit-vol-opt
+      volumes:
+        - name: datakit-vol-opt
+          emptyDir: {}
 ---
 # 部署 order-service
 apiVersion: apps/v1
@@ -242,6 +285,15 @@ spec:
         version: v1
       annotations:
         admission.datakit/java-lib.version: ""
+        datakit/logs: |
+          [
+            {
+              "disable": false,
+              "type": "file",
+              "path":"/data/logs/order-service.log",
+              "source":  "order-service"
+            }
+          ]
     spec:
       containers:
         - name: order-service
@@ -292,7 +344,12 @@ spec:
           ports:
             - containerPort: 20880
               protocol: TCP
-
+          volumeMounts:
+            - mountPath: /data/logs
+              name: datakit-vol-opt
+      volumes:
+        - name: datakit-vol-opt
+          emptyDir: {}
 ---
 # 部署 ds-gateway
 apiVersion: apps/v1
@@ -316,6 +373,15 @@ spec:
         version: v1
       annotations:
         admission.datakit/java-lib.version: ""
+        datakit/logs: |
+          [
+            {
+              "disable": false,
+              "type": "file",
+              "path":"/data/logs/gateway.log",
+              "source":  "gateway"
+            }
+          ]
     spec:
       containers:
         - name: ds-gateway
@@ -332,7 +398,12 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-
+          volumeMounts:
+            - mountPath: /data/logs
+              name: datakit-vol-opt
+      volumes:
+        - name: datakit-vol-opt
+          emptyDir: {}
 ---
 # api-gateway Service
 apiVersion: v1
@@ -352,5 +423,6 @@ spec:
   selector:  # 将后端服务 ds-gateway 和该 Service 进行映射
     app: ds-gateway
     version: v1
-  type: LoadBalancer
+      #  type: LoadBalancer
+  type: NodePort
 

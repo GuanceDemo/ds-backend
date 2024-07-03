@@ -72,6 +72,10 @@ public class OrderServiceImpl implements OrderService {
 
             orderPersistCmpt.saveOrderInfo(orderInfo);
 
+            logger.info("orderId:{},{}",orderId,orderId%3);
+            if (orderId%3==0){
+                throw new RuntimeException("订购异常");
+            }
             resp.setMsg("购买成功");
 
             OrderInfoDto orderInfoDto = new OrderInfoDto();
